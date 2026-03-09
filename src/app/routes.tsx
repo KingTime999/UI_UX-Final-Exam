@@ -7,6 +7,8 @@ import Analytics from "./components/Analytics";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 
+const basename = import.meta.env.PROD ? '/UI_UX-Final-Exam' : '';
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -26,4 +28,6 @@ export const router = createBrowserRouter([
       { path: "analytics", Component: Analytics },
     ],
   },
-]);
+], {
+  basename: basename,
+});
