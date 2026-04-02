@@ -6,6 +6,17 @@
   Original source design:
   https://www.figma.com/design/qiiBHCxpYiUkVkVPz59OzR/Modern-Mobile-UI-Design
 
+  ## Introduction
+
+  Study Planner is a UX/UI prototype that helps users choose realistic tasks based on their current energy level. It combines energy-based task recommendations, Focus Mode, and supporting pages such as Analytics, World Rank, Music, OmeStudy, and Account.
+
+  ## Team Members
+
+  - Nguyen Thanh Son
+  - Le Tan Nguyen
+  - Vo Ngoc Phu
+  - Tran Minh Khoa
+
   ## System Requirements
 
   - Node.js (version 16 or higher)
