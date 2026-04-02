@@ -431,7 +431,9 @@ export default function LandingPage() {
         type="button"
         onClick={toggleMusic}
         className={`fixed bottom-6 z-40 inline-flex items-center gap-2 rounded-full bg-emerald-800 px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-emerald-900/30 transition hover:-translate-y-0.5 hover:bg-emerald-900 ${
-          isMobilePreview ? "right-4" : "right-5"
+          isMobilePreview
+            ? "right-[max(1rem,calc((100vw-28rem)/2+1rem))]"
+            : "right-5"
         }`}
         aria-label="Toggle background music"
       >
@@ -450,7 +452,13 @@ export default function LandingPage() {
       </button>
 
       {musicError && (
-        <div className="fixed bottom-24 right-5 z-30 w-72 rounded-2xl border border-red-200 bg-white/95 p-3 text-xs shadow-lg">
+        <div
+          className={`fixed bottom-24 z-30 rounded-2xl border border-red-200 bg-white/95 p-3 text-xs shadow-lg ${
+            isMobilePreview
+              ? "right-[max(1rem,calc((100vw-28rem)/2+1rem))] w-64"
+              : "right-5 w-72"
+          }`}
+        >
           <p className="text-red-600">{musicError}</p>
         </div>
       )}
