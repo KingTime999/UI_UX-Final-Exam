@@ -1,74 +1,73 @@
 
   # Modern Mobile UI Design
 
-Dự án Modern Mobile UI Design được xây dựng với React, TypeScript, Vite và Tailwind CSS.
+  This Modern Mobile UI Design project is built with React, TypeScript, Vite, and Tailwind CSS.
 
-Dự án gốc có sẵn tại: https://www.figma.com/design/qiiBHCxpYiUkVkVPz59OzR/Modern-Mobile-UI-Design
+  Original source design:
+  https://www.figma.com/design/qiiBHCxpYiUkVkVPz59OzR/Modern-Mobile-UI-Design
 
-## Yêu cầu hệ thống / System Requirements
+  ## System Requirements
 
-- Node.js (phiên bản 16 trở lên / version 16 or higher)
-- npm hoặc yarn
+  - Node.js (version 16 or higher)
+  - npm or yarn
 
-## Hướng dẫn cài đặt và chạy / Installation & Running
+  ## Installation and Run
 
-### 1. Cài đặt dependencies / Install dependencies
+  ### 1. Install dependencies
 
-```bash
-npm install
-```
+  ```bash
+  npm install
+  ```
 
-hoặc / or
+  or
 
-```bash
-npm i
-```
+  ```bash
+  npm i
+  ```
 
-### 2. Chạy development server / Start development server
+  ### 2. Start development server
 
-```bash
-npm run dev
-```
+  ```bash
+  npm run dev
+  ```
 
-Ứng dụng sẽ chạy tại `http://localhost:5173` (hoặc cổng khác nếu 5173 đang được sử dụng)
+  The app runs at `http://localhost:5173` (or another port if 5173 is already in use).
 
-The app will run at `http://localhost:5173` (or another port if 5173 is in use)
+  ### 3. Build for production
 
-### 3. Build cho production / Build for production
+  ```bash
+  npm run build
+  ```
 
-```bash
-npm run build
-```
+  Build output is generated in the `dist/` folder.
 
-Các file đã build sẽ được tạo trong thư mục `dist/`
+  ## Project Structure
 
-Built files will be generated in the `dist/` folder
+  ```
+  src/
+  ├── app/
+  │   ├── components/     # Main components
+  │   │   ├── ui/         # UI components (shadcn/ui)
+  │   │   └── figma/      # Components imported from Figma
+  │   ├── context/        # React Context
+  │   └── routes.tsx      # Route configuration
+  ├── styles/             # Styles and themes
+  └── main.tsx            # Entry point
+  ```
 
-## Cấu trúc dự án / Project Structure
+  ## Technologies
 
-```
-src/
-├── app/
-│   ├── components/     # Các components chính
-│   │   ├── ui/        # UI components (shadcn/ui)
-│   │   └── figma/     # Components từ Figma
-│   ├── context/       # React Context
-│   └── routes.tsx     # Cấu hình routes
-├── styles/            # Styles và themes
-└── main.tsx          # Entry point
-```
+  - **React** - UI framework
+  - **TypeScript** - Type safety
+  - **Vite** - Build tool
+  - **Tailwind CSS** - Styling
+  - **shadcn/ui** - UI components
+  - **Material-UI** - Additional UI components
+  - **React Router** - Routing
 
-## Công nghệ sử dụng / Technologies
+  ## Documentation
 
-- **React** - UI framework
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **shadcn/ui** - UI components
-- **Material-UI** - Additional UI components
-- **React Router** - Routing
+  **Note:** All images in this project are for illustrative purposes only.
 
-## Tài liệu / Documentation
-
-- [Attributions](docs/ATTRIBUTIONS.md) - Thông tin về licenses và nguồn
+  - [Attributions](docs/ATTRIBUTIONS.md) - License and source information
   
