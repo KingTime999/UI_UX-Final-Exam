@@ -17,6 +17,45 @@
   animation: slide-up 0.3s ease-out;
 }
 
+@keyframes fade-in-rise {
+  from {
+    transform: translateY(18px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes gentle-float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+.home-fade-in {
+  animation: fade-in-rise 0.7s ease-out both;
+}
+
+.home-fade-in-delay {
+  animation: fade-in-rise 0.8s 0.15s ease-out both;
+}
+
+.home-float-slow {
+  animation: gentle-float 8s ease-in-out infinite;
+}
+
+.home-float-fast {
+  animation: gentle-float 6s ease-in-out infinite reverse;
+}
+
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }

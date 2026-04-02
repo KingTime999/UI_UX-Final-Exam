@@ -1,11 +1,16 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
-import { Home, ListTodo, Target, BarChart3, Monitor, Smartphone, LogOut, User } from "lucide-react";
+import { Home, ListTodo, Target, BarChart3, Monitor, Smartphone, LogOut, UserCircle2, Trophy, Music2, Pause, Play, Webcam } from "lucide-react";
 import { useApp } from "../context/AppContext";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const appMusicSourcePath = `${(import.meta as unknown as { env: { BASE_URL: string } }).env.BASE_URL}music/homepage-theme.mp3`;
 
 export default function Root() {
   const location = useLocation();
   const navigate = useNavigate();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [musicError, setMusicError] = useState<string | null>(null);
   const { viewMode, setViewMode, isAuthenticated, logout } = useApp();
   
   // Redirect to login if not authenticated
@@ -19,12 +24,53 @@ export default function Root() {
     logout();
     navigate("/login");
   };
+
+  const toggleMusic = async () => {
+    const audio = audioRef.current;
+
+    if (!audio) {
+      return;
+    }
+
+    if (isMusicPlaying) {
+      audio.pause();
+      setIsMusicPlaying(false);
+      return;
+    }
+
+    try {
+      setMusicError(null);
+      audio.volume = 0.35;
+      await audio.play();
+      setIsMusicPlaying(true);
+    } catch {
+      setMusicError("Unable to play music. Please click again after interacting with the page.");
+      setIsMusicPlaying(false);
+    }
+  };
+
+  const handleAudioError = () => {
+    setMusicError("Music file was not found. Please check public/music/homepage-theme.mp3.");
+    setIsMusicPlaying(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
   
   const navItems = [
-    { path: "/", icon: Home, label: "Home" },
-    { path: "/tasks", icon: ListTodo, label: "Tasks" },
-    { path: "/focus", icon: Target, label: "Focus" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/app", icon: Home, label: "Home" },
+    { path: "/app/tasks", icon: ListTodo, label: "Tasks" },
+    { path: "/app/focus", icon: Target, label: "Focus" },
+    { path: "/app/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/app/account", icon: UserCircle2, label: "Account" },
+    { path: "/app/world-rank", icon: Trophy, label: "World Rank" },
+    { path: "/app/music", icon: Music2, label: "Music" },
+    { path: "/app/omestudy", icon: Webcam, label: "OmeStudy" },
   ];
 
   const containerClass = viewMode === "mobile" 
@@ -37,7 +83,11 @@ export default function Root() {
 
   if (viewMode === "desktop") {
     return (
-      <div className="h-screen flex bg-gray-50">
+      <div className="h-screen flex bg-gradient-to-b from-emerald-50 via-lime-50 to-green-100">
+        <audio ref={audioRef} loop onError={handleAudioError}>
+          <source src={appMusicSourcePath} type="audio/mpeg" />
+        </audio>
+
         {/* Desktop Sidebar */}
         <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
           <div className="p-6 border-b border-gray-200">
@@ -57,8 +107,8 @@ export default function Root() {
                     to={item.path}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                       isActive 
-                        ? "text-blue-600 bg-blue-50" 
-                        : "text-gray-700 hover:bg-gray-50"
+                        ? "text-emerald-700 bg-emerald-100" 
+                        : "text-gray-700 hover:bg-emerald-50"
                     }`}
                   >
                     <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
@@ -71,10 +121,29 @@ export default function Root() {
 
           {/* User Info & Actions */}
           <div className="p-4 border-t border-gray-200 space-y-2">
+            {/* Music Toggle */}
+            <button
+              onClick={toggleMusic}
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-emerald-50 rounded-xl transition-colors"
+            >
+              <Music2 className="w-5 h-5" />
+              <span className="font-medium flex items-center gap-2">
+                {isMusicPlaying ? (
+                  <>
+                    <Pause className="w-4 h-4" /> Music On
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4" /> Music Off
+                  </>
+                )}
+              </span>
+            </button>
+
             {/* View Mode Toggle */}
             <button
               onClick={() => setViewMode("mobile")}
-              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-emerald-50 rounded-xl transition-colors"
             >
               <Smartphone className="w-5 h-5" />
               <span className="font-medium">Mobile View</span>
@@ -88,6 +157,8 @@ export default function Root() {
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Logout</span>
             </button>
+
+            {musicError && <p className="text-xs text-red-600 px-1">{musicError}</p>}
           </div>
         </aside>
 
@@ -101,14 +172,25 @@ export default function Root() {
 
   // Mobile Layout
   return (
-    <div className={`h-screen flex flex-col bg-gray-50 ${containerClass}`}>
+    <div className={`h-screen flex flex-col bg-gradient-to-b from-emerald-50 via-lime-50 to-green-100 ${containerClass}`}>
+      <audio ref={audioRef} loop onError={handleAudioError}>
+        <source src={appMusicSourcePath} type="audio/mpeg" />
+      </audio>
+
       {/* View Mode Toggle - Mobile */}
-      <div className="bg-white border-b border-gray-200 px-5 py-3 flex items-center justify-between">
+      <div className="bg-white/90 border-b border-emerald-100 px-5 py-3 flex items-center justify-between">
         <h1 className="text-lg font-semibold text-gray-900">Study Planner</h1>
         <div className="flex items-center gap-2">
           <button
+            onClick={toggleMusic}
+            className="p-2 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors"
+            title={isMusicPlaying ? "Pause music" : "Play music"}
+          >
+            {isMusicPlaying ? <Pause className="w-4 h-4" /> : <Music2 className="w-4 h-4" />}
+          </button>
+          <button
             onClick={() => setViewMode("desktop")}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-emerald-50 rounded-lg transition-colors"
           >
             <Monitor className="w-4 h-4" />
             <span>Desktop</span>
@@ -124,13 +206,14 @@ export default function Root() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto pb-20">
+      <div className="flex-1 overflow-y-auto pb-32">
+        {musicError && <p className="px-5 pt-3 text-xs text-red-600">{musicError}</p>}
         <Outlet />
       </div>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200 px-2 py-2 safe-area-bottom">
-        <div className="flex justify-around items-center">
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-emerald-100 px-2 py-2 safe-area-bottom">
+        <div className="grid grid-cols-4 gap-1 items-center">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -139,14 +222,14 @@ export default function Root() {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex flex-col items-center justify-center px-4 py-2 rounded-xl transition-colors ${
+                className={`flex flex-col items-center justify-center px-2 py-2 rounded-xl transition-colors ${
                   isActive 
-                    ? "text-blue-600 bg-blue-50" 
+                    ? "text-emerald-700 bg-emerald-100" 
                     : "text-gray-500 hover:text-gray-700"
                 }`}
               >
-                <Icon className="w-6 h-6 mb-1" strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-xs font-medium">{item.label}</span>
+                <Icon className="w-5 h-5 mb-1" strokeWidth={isActive ? 2.5 : 2} />
+                <span className="text-[11px] font-medium leading-none">{item.label}</span>
               </Link>
             );
           })}

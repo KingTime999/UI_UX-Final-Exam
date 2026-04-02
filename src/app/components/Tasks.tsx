@@ -10,7 +10,6 @@ export default function Tasks() {
   const completedTasks = tasks.filter((task) => task.status === "completed");
 
   const containerClass = viewMode === "desktop" ? "max-w-6xl mx-auto" : "";
-  const gridClass = viewMode === "desktop" ? "lg:grid-cols-2 gap-6" : "";
 
   return (
     <div className={`min-h-full px-5 pt-8 pb-8 ${containerClass}`}>
@@ -35,40 +34,38 @@ export default function Tasks() {
         )}
       </div>
 
-      <div className={`grid ${gridClass}`}>
-        {/* Active Tasks */}
-        <div className="mb-6">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-            Active
-          </h2>
-          {activeTasks.length === 0 ? (
-            <div className="bg-white rounded-xl p-6 text-center shadow-sm">
-              <div className="text-4xl mb-2">✅</div>
-              <p className="text-gray-500">No active tasks</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {activeTasks.map((task) => (
-                <TaskListCard key={task.id} task={task} onDelete={deleteTask} />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Completed Tasks */}
-        {completedTasks.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
-              Completed
-            </h2>
-            <div className="space-y-3">
-              {completedTasks.map((task) => (
-                <TaskListCard key={task.id} task={task} onDelete={deleteTask} />
-              ))}
-            </div>
+      {/* Active Tasks */}
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          Active
+        </h2>
+        {activeTasks.length === 0 ? (
+          <div className="bg-white rounded-xl p-6 text-center shadow-sm">
+            <div className="text-4xl mb-2">✅</div>
+            <p className="text-gray-500">No active tasks</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {activeTasks.map((task) => (
+              <TaskListCard key={task.id} task={task} onDelete={deleteTask} />
+            ))}
           </div>
         )}
       </div>
+
+      {/* Completed Tasks */}
+      {completedTasks.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+            Completed
+          </h2>
+          <div className="space-y-3">
+            {completedTasks.map((task) => (
+              <TaskListCard key={task.id} task={task} onDelete={deleteTask} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Floating Add Button - Desktop only */}
       {viewMode === "desktop" && (

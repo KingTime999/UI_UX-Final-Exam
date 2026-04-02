@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router";
-import { Mail, Lock, Eye, EyeOff, BookOpen, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, BookOpen, User, Phone, CalendarDays } from "lucide-react";
 import { useApp } from "../context/AppContext";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    phone: "",
+    birthDate: "",
+    gender: "",
     password: "",
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
-  const { login, viewMode } = useApp();
+  const { register, viewMode } = useApp();
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -28,6 +32,24 @@ export default function SignUp() {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email is invalid";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^\d{9,15}$/.test(formData.phone.replace(/\D/g, ""))) {
+      newErrors.phone = "Phone number is invalid";
+    }
+
+    if (!formData.birthDate) {
+      newErrors.birthDate = "Date of birth is required";
+    }
+
+    if (!formData.gender) {
+      newErrors.gender = "Gender is required";
+    }
+
+    if (!isPhoneVerified) {
+      newErrors.phoneVerified = "Please verify your phone number";
     }
     
     if (!formData.password) {
@@ -55,29 +77,63 @@ export default function SignUp() {
     
     // Simulate API call
     setTimeout(() => {
-      login(formData.email);
+      register(
+        {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          birthDate: formData.birthDate,
+          gender: formData.gender,
+        },
+        formData.password
+      );
       setIsLoading(false);
-      navigate("/");
+      navigate("/app");
     }, 1000);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+
+    if (name === "phone") {
+      setIsPhoneVerified(false);
+      setErrors(prev => ({ ...prev, phoneVerified: "" }));
+    }
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
   };
 
+  const handleVerifyPhone = () => {
+    const normalizedPhone = formData.phone.replace(/\D/g, "");
+
+    if (!normalizedPhone) {
+      setErrors(prev => ({ ...prev, phone: "Phone number is required", phoneVerified: "" }));
+      setIsPhoneVerified(false);
+      return;
+    }
+
+    if (!/^\d{9,15}$/.test(normalizedPhone)) {
+      setErrors(prev => ({ ...prev, phone: "Phone number is invalid", phoneVerified: "" }));
+      setIsPhoneVerified(false);
+      return;
+    }
+
+    setIsPhoneVerified(true);
+    setErrors(prev => ({ ...prev, phone: "", phoneVerified: "" }));
+  };
+
   const isDesktop = viewMode === "desktop";
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 ${isDesktop ? 'p-8' : 'p-5'}`}>
+    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-lime-50 to-green-100 ${isDesktop ? 'p-8' : 'p-5'}`}>
       <div className={`w-full ${isDesktop ? 'max-w-md' : 'max-w-sm'}`}>
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-700 rounded-2xl mb-4">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className={`font-bold text-gray-900 mb-2 ${isDesktop ? 'text-3xl' : 'text-2xl'}`}>
@@ -109,7 +165,7 @@ export default function SignUp() {
                   type="text"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
                     errors.fullName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="John Doe"
@@ -135,7 +191,7 @@ export default function SignUp() {
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="your.email@example.com"
@@ -143,6 +199,100 @@ export default function SignUp() {
               </div>
               {errors.email && (
                 <p className="mt-1.5 text-sm text-red-600">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Phone Number Input */}
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                Phone Number
+              </label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Phone className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
+                      errors.phone ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                    placeholder="0912345678"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleVerifyPhone}
+                  className={`px-4 py-3.5 rounded-xl font-semibold border transition-colors whitespace-nowrap ${
+                    isPhoneVerified
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : 'bg-emerald-700 text-white border-emerald-700 hover:bg-emerald-800'
+                  }`}
+                >
+                  {isPhoneVerified ? "Verified" : "Verify"}
+                </button>
+              </div>
+              {errors.phone && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.phone}</p>
+              )}
+              {!errors.phone && errors.phoneVerified && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.phoneVerified}</p>
+              )}
+              {isPhoneVerified && (
+                <p className="mt-1.5 text-sm text-emerald-700">Phone number verified</p>
+              )}
+            </div>
+
+            {/* Date of Birth Input */}
+            <div>
+              <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Date of Birth
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <CalendarDays className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="birthDate"
+                  name="birthDate"
+                  type="date"
+                  value={formData.birthDate}
+                  onChange={handleChange}
+                  className={`block w-full pl-12 pr-4 py-3.5 border rounded-xl text-gray-900 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
+                    errors.birthDate ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                />
+              </div>
+              {errors.birthDate && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.birthDate}</p>
+              )}
+            </div>
+
+            {/* Gender Input */}
+            <div>
+              <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                Gender
+              </label>
+              <select
+                id="gender"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className={`block w-full px-4 py-3.5 border rounded-xl text-gray-900 bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
+                  errors.gender ? 'border-red-500' : 'border-gray-300'
+                }`}
+              >
+                <option value="">Select gender</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.gender && (
+                <p className="mt-1.5 text-sm text-red-600">{errors.gender}</p>
               )}
             </div>
 
@@ -161,7 +311,7 @@ export default function SignUp() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
                     errors.password ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
@@ -198,7 +348,7 @@ export default function SignUp() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  className={`block w-full pl-12 pr-12 py-3.5 border rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all ${
                     errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="••••••••"
@@ -226,15 +376,15 @@ export default function SignUp() {
                 type="checkbox"
                 id="terms"
                 required
-                className="w-4 h-4 mt-1 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="w-4 h-4 mt-1 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
                 I agree to the{" "}
-                <button type="button" className="text-blue-600 hover:text-blue-700 font-medium">
+                <button type="button" className="text-emerald-700 hover:text-emerald-800 font-medium">
                   Terms and Conditions
                 </button>{" "}
                 and{" "}
-                <button type="button" className="text-blue-600 hover:text-blue-700 font-medium">
+                <button type="button" className="text-emerald-700 hover:text-emerald-800 font-medium">
                   Privacy Policy
                 </button>
               </label>
@@ -244,7 +394,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all text-base shadow-lg shadow-blue-600/30"
+              className="w-full py-3.5 bg-emerald-700 text-white rounded-xl font-semibold hover:bg-emerald-800 active:bg-emerald-900 disabled:bg-emerald-400 disabled:cursor-not-allowed transition-all text-base shadow-lg shadow-emerald-700/30"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -307,7 +457,7 @@ export default function SignUp() {
           {/* Sign In Link */}
           <p className="mt-6 text-center text-sm text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="font-semibold text-blue-600 hover:text-blue-700">
+            <Link to="/login" className="font-semibold text-emerald-700 hover:text-emerald-800">
               Sign in
             </Link>
           </p>
@@ -316,8 +466,8 @@ export default function SignUp() {
         {/* Footer */}
         <p className="mt-8 text-center text-sm text-gray-500">
           By creating an account, you agree to our{" "}
-          <button className="text-blue-600 hover:text-blue-700">Terms</button> and{" "}
-          <button className="text-blue-600 hover:text-blue-700">Privacy Policy</button>
+          <button className="text-emerald-700 hover:text-emerald-800">Terms</button> and{" "}
+          <button className="text-emerald-700 hover:text-emerald-800">Privacy Policy</button>
         </p>
       </div>
     </div>

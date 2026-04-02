@@ -19,18 +19,18 @@ export default function Login() {
     setTimeout(() => {
       login(email);
       setIsLoading(false);
-      navigate("/");
+      navigate("/app");
     }, 1000);
   };
 
   const isDesktop = viewMode === "desktop";
 
   return (
-    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 ${isDesktop ? 'p-8' : 'p-5'}`}>
+    <div className={`min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 via-lime-50 to-green-100 ${isDesktop ? 'p-8' : 'p-5'}`}>
       <div className={`w-full ${isDesktop ? 'max-w-md' : 'max-w-sm'}`}>
         {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-700 rounded-2xl mb-4">
             <BookOpen className="w-8 h-8 text-white" />
           </div>
           <h1 className={`font-bold text-gray-900 mb-2 ${isDesktop ? 'text-3xl' : 'text-2xl'}`}>
@@ -61,7 +61,7 @@ export default function Login() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="block w-full pl-12 pr-4 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   placeholder="your.email@example.com"
                   required
                 />
@@ -82,7 +82,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                  className="block w-full pl-12 pr-12 py-3.5 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
                   placeholder="••••••••"
                   required
                 />
@@ -105,13 +105,13 @@ export default function Login() {
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
               <button
                 type="button"
-                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                className="text-sm font-medium text-emerald-700 hover:text-emerald-800"
               >
                 Forgot password?
               </button>
@@ -121,7 +121,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 disabled:cursor-not-allowed transition-all text-base shadow-lg shadow-blue-600/30"
+              className="w-full py-3.5 bg-emerald-700 text-white rounded-xl font-semibold hover:bg-emerald-800 active:bg-emerald-900 disabled:bg-emerald-400 disabled:cursor-not-allowed transition-all text-base shadow-lg shadow-emerald-700/30"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -184,7 +184,7 @@ export default function Login() {
           {/* Sign Up Link */}
           <p className="mt-6 text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-semibold text-blue-600 hover:text-blue-700">
+            <Link to="/signup" className="font-semibold text-emerald-700 hover:text-emerald-800">
               Sign up
             </Link>
           </p>
@@ -193,8 +193,8 @@ export default function Login() {
         {/* Footer */}
         <p className="mt-8 text-center text-sm text-gray-500">
           By signing in, you agree to our{" "}
-          <button className="text-blue-600 hover:text-blue-700">Terms</button> and{" "}
-          <button className="text-blue-600 hover:text-blue-700">Privacy Policy</button>
+          <button className="text-emerald-700 hover:text-emerald-800">Terms</button> and{" "}
+          <button className="text-emerald-700 hover:text-emerald-800">Privacy Policy</button>
         </p>
       </div>
     </div>
