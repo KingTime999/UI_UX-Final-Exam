@@ -75,7 +75,11 @@
   - **shadcn/ui** - UI components
   - **Material-UI** - Additional UI components
   - **React Router** - Routing
-
+    
+  ## Testing Account
+  - **john.anderson@example.com**
+  - **password123**
+    
   ## Documentation
 
   **Note:** All images in this project are for illustrative purposes only.
